@@ -1,5 +1,5 @@
 app_name = "offsitebackup"
-app_title = "Offsitebackup"
+app_title = "Offsite Backup"
 app_publisher = "SF Group of Companies"
 app_description = "Nightly database backup to a Microsoft 365 SharePoint library"
 app_email = "dev@sfgroup.co.tz"
@@ -263,4 +263,3 @@ app_license = "mit"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-
