@@ -78,6 +78,8 @@ jobs:
 
       - name: Install MariaDB Client
         run: sudo apt-get install mariadb-client
+      - name: Let the client reach the test database without SSL
+        run: printf "[client]\nskip-ssl\n" > ~/.my.cnf
 
       - name: Setup
         run: |
