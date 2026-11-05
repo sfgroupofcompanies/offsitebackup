@@ -191,3 +191,29 @@ class GraphClient:
 				start, end, size, CHUNK_TRIES, last_error
 			)
 		)
+
+	# -- listing and deleting (for the prune) ----------------------------------
+
+	def list_folder(self) -> list[dict]:
+		"""Every file in the site's folder: id, name, size, created. Follows Microsoft's paging."""
+		url = f"{self.item_url()}:/children?$select=id,name,size,createdDateTime,folder&$top=200"
+		files = []
+		while url:
+			body = self.request("GET", url).json()
+			for item in body.get("value", []):
+				if "folder" in item:
+					continue
+				files.append(
+					{
+						"id": item["id"],
+						"name": item["name"],
+						"size": item.get("size", 0),
+						"created": item.get("createdDateTime", ""),
+					}
+				)
+			url = body.get("@odata.nextLink")
+		return files
+
+	def delete_item(self, item_id: str):
+		"""Remove one file from the library (it goes to the site's recycle bin)."""
+		self.request("DELETE", f"{GRAPH_URL}/sites/{self.site_id}/drive/items/{item_id}", ok=(204,))
