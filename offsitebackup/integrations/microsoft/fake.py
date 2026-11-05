@@ -5,7 +5,7 @@ token, site lookup, folder check/create, upload session with chunks, listing, de
 
     bench --site <site> set-config offsitebackup_login_url http://127.0.0.1:8765
     bench --site <site> set-config offsitebackup_graph_url http://127.0.0.1:8765/v1.0
-    python3 -m offsitebackup.fake_microsoft /path/to/library --port 8765
+    ./env/bin/python -m offsitebackup.integrations.microsoft.fake /path/to/library --port 8765
 
 Never run it on a real site: it accepts any credentials.
 """

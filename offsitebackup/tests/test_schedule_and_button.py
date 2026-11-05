@@ -4,7 +4,9 @@ from unittest.mock import patch
 import frappe
 from frappe.tests.utils import FrappeTestCase
 
-from offsitebackup.backup import backup_now, run_backup, scheduled_backup
+from offsitebackup.api.backup import backup_now
+from offsitebackup.backup.run import run_backup
+from offsitebackup.tasks.nightly import scheduled_backup
 
 from .test_run_backup import enable_settings
 
@@ -19,17 +21,17 @@ class TestScheduleAndButton(FrappeTestCase):
 
 	def test_the_job_is_registered_at_half_past_two(self):
 		cron = frappe.get_hooks("scheduler_events", app_name="offsitebackup").get("cron", {})
-		self.assertEqual(cron.get("30 2 * * *"), ["offsitebackup.backup.scheduled_backup"])
+		self.assertEqual(cron.get("30 2 * * *"), ["offsitebackup.tasks.nightly.scheduled_backup"])
 
 	def test_daily_runs_every_night(self):
 		enable_settings(backup_frequency="Daily")
-		with patch("offsitebackup.backup.run_backup", return_value="RUN-1") as run:
+		with patch("offsitebackup.tasks.nightly.run_backup", return_value="RUN-1") as run:
 			self.assertEqual(scheduled_backup(), "RUN-1")
 		run.assert_called_once_with("Scheduled")
 
 	def test_weekly_runs_on_sunday_only(self):
 		enable_settings(backup_frequency="Weekly")
-		with patch("offsitebackup.backup.run_backup", return_value="RUN-1") as run:
+		with patch("offsitebackup.tasks.nightly.run_backup", return_value="RUN-1") as run:
 			with patch("frappe.utils.nowdate", return_value=date(2026, 11, 4).isoformat()):  # a Wednesday
 				self.assertIsNone(scheduled_backup())
 			run.assert_not_called()

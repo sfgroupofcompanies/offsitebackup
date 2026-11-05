@@ -8,10 +8,11 @@ from unittest.mock import patch
 import frappe
 from frappe.tests.utils import FrappeTestCase
 
-from offsitebackup import microsoft
-from offsitebackup.fake_microsoft import serve
-from offsitebackup.microsoft import GraphClient, MicrosoftError, get_token
-from offsitebackup.prune import prune_folder
+from offsitebackup.backup.prune import prune_folder
+from offsitebackup.integrations.microsoft import graph as microsoft
+from offsitebackup.integrations.microsoft.fake import serve
+from offsitebackup.integrations.microsoft.graph import GraphClient
+from offsitebackup.integrations.microsoft.token import MicrosoftError, get_token
 
 SITE = "https://fake.sharepoint.com/sites/ERPBackups"
 

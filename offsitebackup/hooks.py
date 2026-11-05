@@ -170,7 +170,7 @@ app_license = "mit"
 scheduler_events = {
 	"cron": {
 		"30 2 * * *": [
-			"offsitebackup.backup.scheduled_backup",
+			"offsitebackup.tasks.nightly.scheduled_backup",
 		],
 	},
 }

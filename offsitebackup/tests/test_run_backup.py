@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 import frappe
 from frappe.tests.utils import FrappeTestCase
 
-from offsitebackup.backup import run_backup
-from offsitebackup.microsoft import MicrosoftError
+from offsitebackup.backup.run import run_backup
+from offsitebackup.integrations.microsoft.token import MicrosoftError
 
 MADE = {"path": "/tmp/x-database.sql.gz", "file_name": "x-database.sql.gz", "size_mb": 139.2}
 PRUNED = {"kept": ["a", "b", "c"], "deleted": ["d"]}
@@ -56,10 +56,10 @@ class Pieces:
 
 	def __enter__(self):
 		self.patches = [
-			patch("offsitebackup.backup.make_backup", self.make_backup),
-			patch("offsitebackup.microsoft.get_token", self.get_token),
-			patch("offsitebackup.microsoft.GraphClient", self.graph_client),
-			patch("offsitebackup.prune.prune_folder", self.prune_folder),
+			patch("offsitebackup.backup.run.make_backup", self.make_backup),
+			patch("offsitebackup.integrations.microsoft.token.get_token", self.get_token),
+			patch("offsitebackup.integrations.microsoft.graph.GraphClient", self.graph_client),
+			patch("offsitebackup.backup.prune.prune_folder", self.prune_folder),
 			patch("frappe.integrations.offsite_backup_utils.send_email", self.send_email),
 		]
 		for p in self.patches:
