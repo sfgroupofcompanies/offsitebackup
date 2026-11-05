@@ -81,3 +81,15 @@ class TestAgainstTheFake(FrappeTestCase):
 		self.assertEqual(len(result["deleted"]), 5)
 		self.assertEqual(len(os.listdir(folder)), 30)
 		self.assertTrue(all(n.startswith("202611") or int(n[6:8]) >= 6 for n in os.listdir(folder)))
+
+	def test_delete_cannot_leave_the_library(self):
+		outside = os.path.join(os.path.dirname(self.library), "outside-" + os.path.basename(self.library))
+		with open(outside, "wb") as handle:
+			handle.write(b"keep me")
+		self.addCleanup(lambda: os.path.exists(outside) and os.remove(outside))
+		client = self.client("gva-sf")
+		bad_id = "..|" + os.path.basename(outside)
+		with self.assertRaises(MicrosoftError) as caught:
+			client.delete_item(bad_id)
+		self.assertIn("404", str(caught.exception))
+		self.assertTrue(os.path.exists(outside), "a traversal id must never delete outside the library")
