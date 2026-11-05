@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 
 from frappe.tests.utils import FrappeTestCase
 
-from offsitebackup.microsoft import GRAPH_URL, GraphClient
-from offsitebackup.prune import backup_date, choose_files_to_delete, prune_folder
+from offsitebackup.backup.prune import backup_date, choose_files_to_delete, prune_folder
+from offsitebackup.integrations.microsoft.graph import GRAPH_URL, GraphClient
 
 TODAY = date(2026, 11, 5)
 
@@ -108,7 +108,7 @@ class TestPruneFolder(FrappeTestCase):
 			raise AssertionError(f"unexpected {method} {url}")
 
 		session.request.side_effect = request
-		with patch("offsitebackup.microsoft.get_request_session", return_value=session):
+		with patch("offsitebackup.integrations.microsoft.graph.get_request_session", return_value=session):
 			return GraphClient("tok", SITE, "gva-sf")
 
 	def test_lists_every_page_skips_folders_and_deletes_the_right_files(self):

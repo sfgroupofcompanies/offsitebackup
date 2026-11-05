@@ -13,7 +13,7 @@ frappe.ui.form.on("Offsite Backup Settings", {
     if (frm.doc.enabled && !frm.is_dirty()) {
       frm.add_custom_button(__("Back up now"), () => {
         frappe.call({
-          method: "offsitebackup.backup.backup_now",
+          method: "offsitebackup.api.backup.backup_now",
           freeze: true,
           freeze_message: __("Queueing the backup..."),
         });

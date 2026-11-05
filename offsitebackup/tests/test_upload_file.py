@@ -5,8 +5,8 @@ from unittest.mock import MagicMock, patch
 import requests
 from frappe.tests.utils import FrappeTestCase
 
-from offsitebackup import microsoft
-from offsitebackup.microsoft import GRAPH_URL, GraphClient, MicrosoftError
+from offsitebackup.integrations.microsoft import graph as microsoft
+from offsitebackup.integrations.microsoft.graph import GRAPH_URL, GraphClient, MicrosoftError
 
 SITE = "https://example.sharepoint.com/sites/ERPBackups"
 SITE_ID = "example.sharepoint.com,1111,2222"
@@ -73,7 +73,7 @@ class TestUploadFile(FrappeTestCase):
 		self.addCleanup(self.chunk.stop)
 
 	def client(self, session):
-		with patch("offsitebackup.microsoft.get_request_session", return_value=session):
+		with patch("offsitebackup.integrations.microsoft.graph.get_request_session", return_value=session):
 			return GraphClient("tok-1", SITE, "gva-sf")
 
 	def test_file_goes_up_in_pieces_with_the_right_ranges(self):

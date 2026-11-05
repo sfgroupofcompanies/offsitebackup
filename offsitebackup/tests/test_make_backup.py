@@ -5,7 +5,7 @@ import frappe
 from frappe.tests.utils import FrappeTestCase
 from frappe.utils import get_backups_path
 
-from offsitebackup.backup import make_backup
+from offsitebackup.backup.dump import make_backup
 
 
 class TestMakeBackup(FrappeTestCase):
@@ -31,13 +31,13 @@ class TestMakeBackup(FrappeTestCase):
 	def test_missing_file_is_an_error(self):
 		fake = MagicMock()
 		fake.backup_path_db = "/nowhere/backup.sql.gz"
-		with patch("offsitebackup.backup.new_backup", return_value=fake):
+		with patch("offsitebackup.backup.dump.new_backup", return_value=fake):
 			self.assertRaises(frappe.ValidationError, make_backup)
 
 	def test_frappe_is_asked_for_database_only(self):
 		fake = MagicMock()
 		fake.backup_path_db = __file__
-		with patch("offsitebackup.backup.new_backup", return_value=fake) as new_backup:
+		with patch("offsitebackup.backup.dump.new_backup", return_value=fake) as new_backup:
 			make_backup()
 		kwargs = new_backup.call_args.kwargs
 		self.assertTrue(kwargs["ignore_files"])
