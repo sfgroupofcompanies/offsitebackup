@@ -57,10 +57,10 @@ class Pieces:
 	def __enter__(self):
 		self.patches = [
 			patch("offsitebackup.backup.run.make_backup", self.make_backup),
-			patch("offsitebackup.integrations.microsoft.token.get_token", self.get_token),
-			patch("offsitebackup.integrations.microsoft.graph.GraphClient", self.graph_client),
-			patch("offsitebackup.backup.prune.prune_folder", self.prune_folder),
-			patch("frappe.integrations.offsite_backup_utils.send_email", self.send_email),
+			patch("offsitebackup.backup.run.get_token", self.get_token),
+			patch("offsitebackup.backup.run.GraphClient", self.graph_client),
+			patch("offsitebackup.backup.run.prune_folder", self.prune_folder),
+			patch("offsitebackup.backup.run.send_email", self.send_email),
 		]
 		for p in self.patches:
 			p.start()
@@ -162,3 +162,11 @@ class TestRunBackup(FrappeTestCase):
 		self.assertEqual(run.file_name, "")
 		self.assertIn("did not produce", run.message)
 		self.assertEqual(pieces.calls, ["email"])
+
+	def test_failure_email_text_is_escaped(self):
+		enable_settings()
+		with Pieces(upload_error=MicrosoftError('Microsoft answered 403: <img src=x onerror="x">')) as pieces:
+			run_backup()
+		emailed = pieces.send_email.call_args.args[4]
+		self.assertNotIn("<img", emailed)
+		self.assertIn("&lt;img", emailed)

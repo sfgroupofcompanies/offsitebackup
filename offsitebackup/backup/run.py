@@ -2,8 +2,14 @@
 
 import frappe
 from frappe import _
+from frappe.integrations.offsite_backup_utils import send_email
+from frappe.utils import escape_html
 
 from offsitebackup.backup.dump import make_backup
+from offsitebackup.backup.prune import prune_folder
+from offsitebackup.integrations.microsoft.graph import GraphClient
+from offsitebackup.integrations.microsoft.token import get_token
+from offsitebackup.offsite_backup.doctype.offsite_backup_run.offsite_backup_run import finish_run, start_run
 
 SERVICE_NAME = "Microsoft 365"
 SETTINGS = "Offsite Backup Settings"
@@ -16,16 +22,6 @@ def run_backup(trigger: str = "Scheduled"):
 	every failure is written to the run log, the settings' Last Run fields, the
 	Error Log and the failure email.
 	"""
-	from frappe.integrations.offsite_backup_utils import send_email
-
-	from offsitebackup.backup.prune import prune_folder
-	from offsitebackup.integrations.microsoft.graph import GraphClient
-	from offsitebackup.integrations.microsoft.token import get_token
-	from offsitebackup.offsite_backup.doctype.offsite_backup_run.offsite_backup_run import (
-		finish_run,
-		start_run,
-	)
-
 	settings = frappe.get_single(SETTINGS)
 	if not settings.enabled:
 		return None
@@ -43,7 +39,7 @@ def run_backup(trigger: str = "Scheduled"):
 		)
 		finish_run(run, True, file_name=made["file_name"], size_mb=made["size_mb"], message=summary)
 		_write_last_run(run, "Success: " + summary)
-		_notify(send_email, True)
+		_notify(True)
 	except Exception as exc:
 		frappe.log_error(title=_("Offsite backup failed"), message=frappe.get_traceback())
 		reason = str(exc) or type(exc).__name__
@@ -59,7 +55,7 @@ def run_backup(trigger: str = "Scheduled"):
 			message=reason,
 		)
 		_write_last_run(run, "Failed: " + reason)
-		_notify(send_email, False, reason)
+		_notify(False, reason)
 	return run.name
 
 
@@ -76,10 +72,16 @@ def _write_last_run(run, result: str):
 	)
 
 
-def _notify(send_email, success: bool, error: str = ""):
-	"""The success email only when ticked (send_email checks that itself); failures always. Never raises."""
+def _notify(success: bool, error: str = ""):
+	"""The success email only when ticked (send_email checks that itself); failures always. Never raises.
+
+	Frappe's helper puts the error text into the email body as HTML, and the text can carry
+	Microsoft's own words from a response, so it is escaped here; the stored run message is not.
+	"""
 	try:
-		send_email(success, SERVICE_NAME, SETTINGS, "send_notifications_to", error or None)
+		send_email(
+			success, SERVICE_NAME, SETTINGS, "send_notifications_to", escape_html(error) if error else None
+		)
 	except Exception:
 		frappe.log_error(
 			title=_("Offsite backup: could not send the status email"), message=frappe.get_traceback()
