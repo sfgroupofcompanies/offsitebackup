@@ -82,3 +82,13 @@ class TestRunLog(FrappeTestCase):
 		self.assertTrue(frappe.db.exists("Number Card", "Failed Backups (30 days)"))
 		self.assertTrue(frappe.db.exists("Dashboard", "Offsite Backup"))
 		self.assertTrue(frappe.db.exists("Workspace", "Offsite Backup"))
+
+	def test_workspace_and_cards_are_for_system_managers_only(self):
+		roles = [r.role for r in frappe.get_doc("Workspace", "Offsite Backup").roles]
+		self.assertEqual(roles, ["System Manager"])
+		for doctype, name in [
+			("Number Card", "Days Since Last Good Backup"),
+			("Number Card", "Failed Backups (30 days)"),
+			("Dashboard Chart", "Backup Size per Day"),
+		]:
+			self.assertFalse(frappe.db.get_value(doctype, name, "is_public"), f"{name} must not be public")
