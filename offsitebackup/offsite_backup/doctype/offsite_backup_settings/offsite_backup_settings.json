@@ -1,0 +1,178 @@
+{
+ "actions": [],
+ "creation": "2026-11-05 09:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "backup_frequency",
+  "microsoft_365_section",
+  "site_url",
+  "folder",
+  "column_break_m365",
+  "tenant_id",
+  "client_id",
+  "client_secret",
+  "retention_section",
+  "keep_daily",
+  "column_break_retention",
+  "keep_monthly",
+  "notifications_section",
+  "send_notifications_to",
+  "send_email_for_successful_backup",
+  "last_run_section",
+  "last_run_on",
+  "last_file",
+  "column_break_last_run",
+  "last_size_mb",
+  "last_result"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "default": "Daily",
+   "fieldname": "backup_frequency",
+   "fieldtype": "Select",
+   "label": "Backup Frequency",
+   "options": "Daily\nWeekly"
+  },
+  {
+   "fieldname": "microsoft_365_section",
+   "fieldtype": "Section Break",
+   "label": "Microsoft 365"
+  },
+  {
+   "description": "The private library's site, for example https://company.sharepoint.com/sites/ERPBackups",
+   "fieldname": "site_url",
+   "fieldtype": "Data",
+   "label": "SharePoint Site URL"
+  },
+  {
+   "description": "Folder inside the library for this site, for example gva-sf",
+   "fieldname": "folder",
+   "fieldtype": "Data",
+   "label": "Folder"
+  },
+  {
+   "fieldname": "column_break_m365",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID"
+  },
+  {
+   "fieldname": "client_id",
+   "fieldtype": "Data",
+   "label": "Client ID"
+  },
+  {
+   "fieldname": "client_secret",
+   "fieldtype": "Password",
+   "label": "Client Secret"
+  },
+  {
+   "fieldname": "retention_section",
+   "fieldtype": "Section Break",
+   "label": "Retention"
+  },
+  {
+   "default": "30",
+   "description": "How many nightly files to keep",
+   "fieldname": "keep_daily",
+   "fieldtype": "Int",
+   "label": "Keep Daily Backups"
+  },
+  {
+   "fieldname": "column_break_retention",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "12",
+   "description": "Keep the first file of each month for this many months",
+   "fieldname": "keep_monthly",
+   "fieldtype": "Int",
+   "label": "Keep Monthly Backups"
+  },
+  {
+   "fieldname": "notifications_section",
+   "fieldtype": "Section Break",
+   "label": "Notifications"
+  },
+  {
+   "description": "Comma-separated email addresses. Failures are always sent.",
+   "fieldname": "send_notifications_to",
+   "fieldtype": "Data",
+   "label": "Send Notifications To",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "send_email_for_successful_backup",
+   "fieldtype": "Check",
+   "label": "Send Email for Successful Backup"
+  },
+  {
+   "fieldname": "last_run_section",
+   "fieldtype": "Section Break",
+   "label": "Last Run"
+  },
+  {
+   "fieldname": "last_run_on",
+   "fieldtype": "Datetime",
+   "label": "Last Run On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_file",
+   "fieldtype": "Data",
+   "label": "Last File",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_last_run",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_size_mb",
+   "fieldtype": "Float",
+   "label": "Last Size (MB)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_result",
+   "fieldtype": "Small Text",
+   "label": "Last Result",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-11-05 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Offsite Backup",
+ "name": "Offsite Backup Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
