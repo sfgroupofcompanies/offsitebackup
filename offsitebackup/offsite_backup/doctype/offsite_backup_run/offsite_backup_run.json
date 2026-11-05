@@ -1,0 +1,123 @@
+{
+ "actions": [],
+ "autoname": "RUN-.YYYY.-.#####",
+ "creation": "2026-11-05 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "started_on",
+  "finished_on",
+  "status",
+  "trigger",
+  "column_break_main",
+  "file_name",
+  "size_mb",
+  "duration_seconds",
+  "folder",
+  "message_section",
+  "message"
+ ],
+ "fields": [
+  {
+   "fieldname": "started_on",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Started On",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "finished_on",
+   "fieldtype": "Datetime",
+   "label": "Finished On",
+   "read_only": 1
+  },
+  {
+   "default": "Running",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Running\nSuccess\nFailed",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "Scheduled",
+   "fieldname": "trigger",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Trigger",
+   "options": "Scheduled\nManual",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "file_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "File Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "size_mb",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Size (MB)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "duration_seconds",
+   "fieldtype": "Int",
+   "label": "Duration (seconds)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "folder",
+   "fieldtype": "Data",
+   "label": "Folder",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message_section",
+   "fieldtype": "Section Break",
+   "label": "Message"
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Message",
+   "read_only": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-05 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Offsite Backup",
+ "name": "Offsite Backup Run",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1
+  }
+ ],
+ "sort_field": "started_on",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "file_name",
+ "track_changes": 0
+}
