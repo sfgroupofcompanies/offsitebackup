@@ -4,7 +4,7 @@ from unittest.mock import patch
 import frappe
 from frappe.tests.utils import FrappeTestCase
 
-from offsitebackup.api.backup import backup_now
+from offsitebackup.api.backup import JOB_ID, backup_now
 from offsitebackup.backup.run import run_backup
 from offsitebackup.tasks.nightly import scheduled_backup
 
@@ -48,6 +48,18 @@ class TestScheduleAndButton(FrappeTestCase):
 		self.assertEqual(enqueue.call_args.kwargs["queue"], "long")
 		self.assertEqual(enqueue.call_args.kwargs["trigger"], "Manual")
 		self.assertGreaterEqual(enqueue.call_args.kwargs["timeout"], 600)
+		self.assertTrue(enqueue.call_args.kwargs["deduplicate"])
+		self.assertEqual(enqueue.call_args.kwargs["job_id"], JOB_ID)
+
+	def test_button_answers_post_only(self):
+		self.assertEqual(frappe.allowed_http_methods_for_whitelisted_func[backup_now], ["POST"])
+
+	def test_second_press_does_not_queue_a_second_run(self):
+		enable_settings()
+		with patch("frappe.utils.background_jobs.is_job_enqueued", return_value=True):
+			with patch("frappe.utils.background_jobs.enqueue") as enqueue:
+				backup_now()
+		enqueue.assert_not_called()
 
 	def test_button_refuses_while_disabled(self):
 		enable_settings(enabled=0, site_url="", tenant_id="", client_id="", client_secret="")
