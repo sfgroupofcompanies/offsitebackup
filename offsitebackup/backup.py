@@ -109,3 +109,38 @@ def _notify(send_email, success: bool, error: str = ""):
 		frappe.log_error(
 			title=_("Offsite backup: could not send the status email"), message=frappe.get_traceback()
 		)
+
+
+# ---------------------------------------------------------------------------
+# Entry points: the night-time job and the "Back up now" button
+# ---------------------------------------------------------------------------
+
+WEEKLY_RUN_DAY = 6  # Sunday, as Python counts (Monday = 0)
+JOB_TIMEOUT_SECONDS = 1500
+
+
+def scheduled_backup():
+	"""The 02:30 job. Daily runs every night; Weekly runs on Sundays only."""
+	from frappe.utils import getdate, nowdate
+
+	frequency = frappe.db.get_single_value(SETTINGS, "backup_frequency") or "Daily"
+	if frequency == "Weekly" and getdate(nowdate()).weekday() != WEEKLY_RUN_DAY:
+		return None
+	return run_backup("Scheduled")
+
+
+@frappe.whitelist()
+def backup_now():
+	"""The button: queue one run on the long queue so the browser never waits (mirrors Dropbox's take_backup)."""
+	from frappe.utils.background_jobs import enqueue
+
+	if "System Manager" not in frappe.get_roles():
+		frappe.throw(_("Only a System Manager can start a backup."), frappe.PermissionError)
+	if not frappe.db.get_single_value(SETTINGS, "enabled"):
+		frappe.throw(_("Enable and save the settings first."))
+	enqueue(
+		run_backup, queue="long", timeout=JOB_TIMEOUT_SECONDS, trigger="Manual", enqueue_after_commit=True
+	)
+	frappe.msgprint(
+		_("Backup queued. Watch the Offsite Backup Run list; the result lands there in a few minutes.")
+	)

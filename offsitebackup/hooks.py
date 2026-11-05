@@ -165,23 +165,15 @@ app_license = "mit"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"offsitebackup.tasks.all"
-# 	],
-# 	"daily": [
-# 		"offsitebackup.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"offsitebackup.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"offsitebackup.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"offsitebackup.tasks.monthly"
-# 	],
-# }
+# The nightly backup, 02:30 site time. scheduled_backup() honours the Daily/Weekly
+# setting and does nothing while backups are disabled.
+scheduler_events = {
+	"cron": {
+		"30 2 * * *": [
+			"offsitebackup.backup.scheduled_backup",
+		],
+	},
+}
 
 # Testing
 # -------
