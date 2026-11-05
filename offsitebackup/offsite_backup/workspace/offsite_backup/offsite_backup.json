@@ -1,0 +1,117 @@
+{
+ "charts": [
+  {
+   "chart_name": "Backup Size per Day",
+   "label": "Backup Size per Day"
+  }
+ ],
+ "content": "[{\"id\":\"osb_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Offsite Backup</b></span>\",\"col\":12}},{\"id\":\"osb_nc1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Days Since Last Good Backup\",\"col\":4}},{\"id\":\"osb_nc2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Failed Backups (30 days)\",\"col\":4}},{\"id\":\"osb_sp1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"osb_ch1\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Backup Size per Day\",\"col\":12}},{\"id\":\"osb_sp2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"osb_h2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\",\"col\":12}},{\"id\":\"osb_sc1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Offsite Backup Settings\",\"col\":3}},{\"id\":\"osb_sc2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Offsite Backup Run\",\"col\":3}},{\"id\":\"osb_sc3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Offsite Backup Runs\",\"col\":3}},{\"id\":\"osb_sp3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"osb_h3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Backups</b></span>\",\"col\":12}},{\"id\":\"osb_c1\",\"type\":\"card\",\"data\":{\"card_name\":\"Backups\",\"col\":4}}]",
+ "creation": "2026-11-05 10:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "file",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Offsite Backup",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Backups",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Offsite Backup Settings",
+   "link_count": 0,
+   "link_to": "Offsite Backup Settings",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Offsite Backup Run",
+   "link_count": 0,
+   "link_to": "Offsite Backup Run",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Offsite Backup Runs",
+   "link_count": 0,
+   "link_to": "Offsite Backup Runs",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Offsite Backup Dashboard",
+   "link_count": 0,
+   "link_to": "Offsite Backup",
+   "link_type": "Dashboard",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-11-05 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Offsite Backup",
+ "name": "Offsite Backup",
+ "number_cards": [
+  {
+   "label": "Days Since Last Good Backup",
+   "number_card_name": "Days Since Last Good Backup"
+  },
+  {
+   "label": "Failed Backups (30 days)",
+   "number_card_name": "Failed Backups (30 days)"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 99.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "label": "Offsite Backup Settings",
+   "link_to": "Offsite Backup Settings",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "format": "{} Success",
+   "label": "Offsite Backup Run",
+   "link_to": "Offsite Backup Run",
+   "stats_filter": "{\"status\": \"Success\"}",
+   "type": "DocType"
+  },
+  {
+   "label": "Offsite Backup Runs",
+   "link_to": "Offsite Backup Runs",
+   "type": "Report"
+  }
+ ],
+ "title": "Offsite Backup"
+}

@@ -1,0 +1,28 @@
+{
+ "cards": [
+  {
+   "card": "Days Since Last Good Backup"
+  },
+  {
+   "card": "Failed Backups (30 days)"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Backup Size per Day",
+   "width": "Full"
+  }
+ ],
+ "creation": "2026-11-05 10:00:00.000000",
+ "dashboard_name": "Offsite Backup",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2026-11-05 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Offsite Backup",
+ "name": "Offsite Backup",
+ "owner": "Administrator"
+}
