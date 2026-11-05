@@ -65,7 +65,8 @@ class FakeMicrosoft(BaseHTTPRequestHandler):
 		return os.path.relpath(full_path, self.library).replace(os.sep, "|")
 
 	def path_from_id(self, item_id: str) -> str:
-		return os.path.join(self.library, unquote(item_id).replace("|", os.sep))
+		"""An item id back to a path, kept inside the library: the id comes from the request."""
+		return self.path_in_library(unquote(item_id).replace("|", "/"))
 
 	def log_message(self, fmt, *args):
 		if self.log_requests:
