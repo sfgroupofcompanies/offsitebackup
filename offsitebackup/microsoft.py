@@ -14,7 +14,20 @@ from frappe.utils import get_request_session
 
 LOGIN_URL = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token"
 GRAPH_SCOPE = "https://graph.microsoft.com/.default"
+GRAPH_URL = "https://graph.microsoft.com/v1.0"
 TIMEOUT_SECONDS = 30
+
+
+def login_url() -> str:
+	"""Microsoft's login service, or a stand-in named in site config for rehearsals (offsitebackup_login_url)."""
+	override = frappe.conf.get("offsitebackup_login_url")
+	return override.rstrip("/") + "/{tenant}/oauth2/v2.0/token" if override else LOGIN_URL
+
+
+def graph_url() -> str:
+	"""Microsoft Graph, or a stand-in named in site config for rehearsals (offsitebackup_graph_url)."""
+	override = frappe.conf.get("offsitebackup_graph_url")
+	return override.rstrip("/") if override else GRAPH_URL
 
 
 class MicrosoftError(frappe.ValidationError):
@@ -28,7 +41,7 @@ def get_token(tenant_id: str, client_id: str, client_secret: str) -> str:
 
 	try:
 		response = get_request_session().post(
-			LOGIN_URL.format(tenant=tenant_id),
+			login_url().format(tenant=tenant_id),
 			data={
 				"grant_type": "client_credentials",
 				"client_id": client_id,
@@ -74,7 +87,6 @@ def describe_error(response) -> str:
 # The library: folder, upload session, chunks
 # ---------------------------------------------------------------------------
 
-GRAPH_URL = "https://graph.microsoft.com/v1.0"
 CHUNK_SIZE = 10 * 1024 * 1024  # 10 MiB, a multiple of the 320 KiB Microsoft requires
 CHUNK_TRIES = 3
 UPLOAD_TIMEOUT_SECONDS = 120
@@ -92,6 +104,7 @@ class GraphClient:
 		self.site_url = site_url.strip().rstrip("/")
 		self.folder = folder.strip().strip("/")
 		self.session = get_request_session()
+		self.graph = graph_url()
 		self._site_id = None
 
 	# -- plumbing -----------------------------------------------------------
@@ -107,7 +120,7 @@ class GraphClient:
 		if response.status_code not in ok:
 			raise MicrosoftError(
 				_("Microsoft answered {0} to {1} {2}: {3}").format(
-					response.status_code, method, url.replace(GRAPH_URL, ""), describe_error(response)
+					response.status_code, method, url.replace(self.graph, ""), describe_error(response)
 				)
 			)
 		return response
@@ -119,14 +132,14 @@ class GraphClient:
 			parts = self.site_url.split("://", 1)[-1].split("/", 1)
 			host = parts[0]
 			path = "/" + parts[1] if len(parts) > 1 and parts[1] else ""
-			url = f"{GRAPH_URL}/sites/{host}:{path}" if path else f"{GRAPH_URL}/sites/{host}"
+			url = f"{self.graph}/sites/{host}:{path}" if path else f"{self.graph}/sites/{host}"
 			self._site_id = self.request("GET", url).json()["id"]
 		return self._site_id
 
 	def item_url(self, name: str = "") -> str:
 		"""Path-based address of the folder, or of a file inside it."""
 		path = f"{self.folder}/{name}" if name else self.folder
-		return f"{GRAPH_URL}/sites/{self.site_id}/drive/root:/{path}"
+		return f"{self.graph}/sites/{self.site_id}/drive/root:/{path}"
 
 	# -- folder ---------------------------------------------------------------
 
@@ -137,7 +150,7 @@ class GraphClient:
 			return
 		self.request(
 			"POST",
-			f"{GRAPH_URL}/sites/{self.site_id}/drive/root/children",
+			f"{self.graph}/sites/{self.site_id}/drive/root/children",
 			ok=(200, 201),
 			json={"name": self.folder, "folder": {}, "@microsoft.graph.conflictBehavior": "fail"},
 		)
@@ -216,4 +229,4 @@ class GraphClient:
 
 	def delete_item(self, item_id: str):
 		"""Remove one file from the library (it goes to the site's recycle bin)."""
-		self.request("DELETE", f"{GRAPH_URL}/sites/{self.site_id}/drive/items/{item_id}", ok=(204,))
+		self.request("DELETE", f"{self.graph}/sites/{self.site_id}/drive/items/{item_id}", ok=(204,))
