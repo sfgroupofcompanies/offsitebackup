@@ -1,16 +1,23 @@
-### Offsitebackup
+### Offsite Backup
 
-Nightly database backup to a Microsoft 365 SharePoint library
+Nightly database backup of a Frappe site to a private Microsoft 365 SharePoint library.
+
+- One job at 02:30 site time: Frappe's own database dump (no attachments, no site config), uploaded in 10 MB pieces into one folder of one library, then the folder is pruned to the newest 30 files plus the first file of each of the last 12 months.
+- One Single doctype, **Offsite Backup Settings**, holds the connection and the rules. A **Back up now** button runs the same job on demand.
+- Every attempt is logged as an **Offsite Backup Run**; failures always send an email to the addresses in the settings.
+- The app talks to Microsoft with an app registration limited to that one library (`Sites.Selected`). No user signs in, no refresh tokens, no other data is reachable.
+
+See [docs/OPERATIONS.md](docs/OPERATIONS.md) for installation on a site, the Microsoft 365 setup, what runs when, and how to rehearse without a tenant.
 
 ### Installation
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
-
 ```bash
 cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app offsitebackup
+bench get-app https://github.com/sfgroupofcompanies/offsitebackup --branch develop
+bench --site <site> install-app offsitebackup
 ```
+
+Requires Frappe 15. No other app is needed.
 
 ### Contributing
 
@@ -18,23 +25,18 @@ This app uses `pre-commit` for code formatting and linting. Please [install pre-
 
 ```bash
 cd apps/offsitebackup
-pre-commit install
+bash scripts/setup-git-hooks.sh
 ```
 
-Pre-commit is configured to use the following tools for checking and formatting your code:
+Commit subjects follow Conventional Commits in lower case (`feat: …`, `fix: …`, `ci: …`, `docs: …`). Every change is one small pull request into `develop`; the test workflow installs the app on a fresh Frappe 15 site and runs the suite.
 
-- ruff
-- eslint
-- prettier
-- pyupgrade
+### Tests
 
-### CI
+```bash
+bench --site <site> run-tests --app offsitebackup
+```
 
-This app can use GitHub Actions for CI. The following workflows are configured:
-
-- CI: Installs this app and runs unit tests on every push to `develop` branch.
-- Linters: Runs [Frappe Semgrep Rules](https://github.com/frappe/semgrep-rules) and [pip-audit](https://pypi.org/project/pip-audit/) on every pull request.
-
+The suite needs no Microsoft account: Microsoft is faked in the unit tests, and four end-to-end tests run the real HTTP client against `offsitebackup/integrations/microsoft/fake.py`.
 
 ### License
 
